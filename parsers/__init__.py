@@ -1,0 +1,1 @@
+from .search_parser import search

@@ -110,7 +110,7 @@ def mp4upload(url: str): # incomplete :(
     
     res = client.post(url, data=data, verify=False, allow_redirects=False)
     
-    url = quote(res.headers.get('Location'))
-    print(url)
+    url = res.headers.get('Location')
+    return url
     
 # ============================================================

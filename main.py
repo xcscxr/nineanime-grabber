@@ -1,6 +1,7 @@
 from __future__ import print_function, unicode_literals
 
 import re
+from matplotlib import style
 import questionary
 from questionary import Style
 from utils import getVrf
@@ -17,10 +18,10 @@ from constants import re_exp
 custom_style = Style([
     ('qmark', 'fg:#673ab7 bold'),       # token in front of the question
     ('question', 'bold'),               # question text
-    ('answer', 'fg:#f44336 bold'),      # submitted answer text behind the question
-    ('pointer', 'fg:#673ab7 bold'),     # pointer used in select and checkbox prompts
-    ('highlighted', 'fg:#673ab7 bold'), # pointed-at choice in select and checkbox prompts
-    ('selected', 'fg:#cc5454'),         # style for a selected item of a checkbox
+    ('answer', 'fg:#ffa530 bold'),      # submitted answer text behind the question
+    ('pointer', 'fg:#ffa530 bold'),     # pointer used in select and checkbox prompts
+    ('highlighted', 'fg:#75e653 bold'), # pointed-at choice in select and checkbox prompts
+    ('selected', 'fg:#95ff2b'),         # style for a selected item of a checkbox
     ('separator', 'fg:#cc5454'),        # separator in lists
     ('instruction', ''),                # user instructions for select, rawselect, checkbox
     ('text', ''),                       # plain text
@@ -48,7 +49,8 @@ def finder(query: str, **kwargs):
     
     item = questionary.rawselect(
         'Select an item:',
-        choices = item_choices
+        choices = item_choices,
+        style=custom_style
     ).ask()
     item_input = choice_lookup[item]
     
@@ -93,10 +95,15 @@ def handle_url(c):
     serverid_input = questionary.select(
         'Select server:',
         choices = server_choices,
+        style=custom_style
     ).ask()
     serverid_input = server_lookup[serverid_input]
     
-    ep = questionary.text("Enter episode number:").ask()
+    ep = questionary.text(
+        "Enter episode number:",
+        validate = lambda text: True if len(text) > 0 else "Please enter a value",
+        style=custom_style
+    ).ask()
     episode_input = ep
 
     server_link = get_server_link(episode_input, serverid_input, episodes, servers, c)
@@ -119,7 +126,11 @@ def run():
     
     REGEX = re.compile(re_exp['SITE_REGEX'])
 
-    query = questionary.text("Enter a query or a URL:").ask()
+    query = questionary.text(
+        "Enter a query or a URL:",
+        validate = lambda text: True if len(text) > 0 else "Please enter a value",
+        style=custom_style
+    ).ask()
 
     match = REGEX.search(query)
     if match:

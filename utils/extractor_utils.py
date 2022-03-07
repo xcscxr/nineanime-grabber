@@ -26,12 +26,19 @@ def get_dl(server_link: str, server_id, servers):
 # -----------------------------------------------------------------------
 
 def parse_servers(data: str):
-    # [ {server_id: server_name},... ]
+    # server_id [ {server_id: server_name},... ]
     servers = process_xpath("//*[contains(@id, 'server')]", data)
     server_id = {}
+    server_choices = []
+    server_lookup = {}
     for server in servers:
-        server_id[server.get('data-id')] = server.text_content().strip()
-    return server_id
+        server_name = server.text_content().strip()
+        id = server.get('data-id')
+        server_id[id] = server_name
+        server_choices.append(server_name)
+        server_lookup[server_name] = id
+
+    return server_id, server_choices, server_lookup
 
 # -----------------------------------------------------------------------
 
